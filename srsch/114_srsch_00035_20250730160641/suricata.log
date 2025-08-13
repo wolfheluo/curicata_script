@@ -1,0 +1,34 @@
+[14416 - Suricata-Main] 2025-08-13 10:06:37 Notice: suricata: This is Suricata version 7.0.11 RELEASE running in USER mode
+[14416 - Suricata-Main] 2025-08-13 10:06:37 Info: cpu: CPUs/cores online: 16
+[14416 - Suricata-Main] 2025-08-13 10:06:37 Notice: runmodes: thread stack size of 0 to too small: setting to 512k
+[14416 - Suricata-Main] 2025-08-13 10:06:37 Info: suricata: Setting engine mode to IDS mode by default
+[14416 - Suricata-Main] 2025-08-13 10:06:37 Info: exception-policy: master exception-policy set to: auto
+[14416 - Suricata-Main] 2025-08-13 10:06:37 Info: coredump-config: Configuring core dump is not yet supported on Windows.
+[14416 - Suricata-Main] 2025-08-13 10:06:37 Info: logopenfile: fast output device (regular) initialized: fast.log
+[14416 - Suricata-Main] 2025-08-13 10:06:37 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[14416 - Suricata-Main] 2025-08-13 10:06:37 Info: logopenfile: stats output device (regular) initialized: stats.log
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Error: detect: opening rule file C:\\Program Files\\Suricata\\rules\\emerging-attack_response.rules# 攻擊成功後的回應特徵: Invalid argument.
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Error: detect: opening rule file C:\\Program Files\\Suricata\\rules\\file-executable.rules: No such file or directory.
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Error: detect: opening rule file C:\\Program Files\\Suricata\\rules\\file-identify.rules: No such file or directory.
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Error: detect: opening rule file C:\\Program Files\\Suricata\\rules\\file-other.rules: No such file or directory.
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Error: detect: opening rule file C:\\Program Files\\Suricata\\rules\\file-pdf.rules: No such file or directory.
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Error: detect: opening rule file C:\\Program Files\\Suricata\\rules\\file-office.rules: No such file or directory.
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Error: detect: opening rule file C:\\Program Files\\Suricata\\rules\\file-image.rules: No such file or directory.
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Info: detect: 43 rule files processed. 33533 rules successfully loaded, 0 rules failed, 0
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Warning: threshold-config: Error opening file: "C:\Program Files\Suricata\\\threshold.config": No such file or directory
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Info: detect: 33536 signatures processed. 948 are IP-only rules, 3025 are inspecting packet payload, 29522 inspect application layer, 0 are decoder event only
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Warning: detect-flowbits: flowbit 'et.DocVBAProject' is checked but not set. Checked in 2020170 and 0 other sigs
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Warning: detect-flowbits: flowbit 'ET.generictelegram' is checked but not set. Checked in 2045614 and 0 other sigs
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Warning: detect-flowbits: flowbit 'ET.implantjs.syn' is checked but not set. Checked in 2060257 and 2 other sigs
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Warning: detect-flowbits: flowbit 'ET.JS.Obfus.Func' is checked but not set. Checked in 2017247 and 0 other sigs
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Warning: detect-flowbits: flowbit 'ET.ZIP.Symlink.Inbound' is checked but not set. Checked in 2059742 and 2 other sigs
+[14416 - Suricata-Main] 2025-08-13 10:06:38 Warning: detect-flowbits: flowbit 'ET.telnet.busybox' is checked but not set. Checked in 2023019 and 2 other sigs
+[14416 - Suricata-Main] 2025-08-13 10:06:41 Warning: suricata: setrlimit unavailable.
+[14708 - RX#01] 2025-08-13 10:06:41 Info: pcap: Starting file run for D:\Wireshark\pcap2\114_srsch_00035_20250730160641.pcap
+[14708 - RX#01] 2025-08-13 10:06:41 Info: checksum: No packets with invalid checksum, assuming checksum offloading is NOT used
+[14416 - Suricata-Main] 2025-08-13 10:06:41 Notice: threads: Threads created -> RX: 1 W: 16 FM: 1 FR: 1   Engine started.
+[14708 - RX#01] 2025-08-13 10:06:46 Info: pcap: pcap file D:\Wireshark\pcap2\114_srsch_00035_20250730160641.pcap end of file reached (pcap err code 0)
+[14416 - Suricata-Main] 2025-08-13 10:06:46 Notice: suricata: Signal Received.  Stopping engine.
+[14416 - Suricata-Main] 2025-08-13 10:06:47 Info: suricata: time elapsed 6.103s
+[14708 - RX#01] 2025-08-13 10:06:47 Notice: pcap: read 1 file, 952061 packets, 1016464869 bytes
+[14416 - Suricata-Main] 2025-08-13 10:06:48 Info: counters: Alerts: 85

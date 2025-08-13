@@ -1,0 +1,32 @@
+07/30/2025-10:39:42.705298  [**] [1:2035465:4] ET INFO Observed Discord Domain in DNS Lookup (discord .com) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.10.90:53720 -> 210.69.2.1:53
+07/30/2025-10:39:42.705298  [**] [1:2060503:1] ET INFO Discord Chat Service Domain in DNS Lookup (discord .com) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.10.90:53720 -> 210.69.2.1:53
+07/30/2025-10:39:42.738785  [**] [1:2035463:3] ET INFO Observed Discord Domain (discord .com in TLS SNI) [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.90:6164 -> 162.159.135.232:443
+07/30/2025-10:39:42.738785  [**] [1:2060505:1] ET INFO Observed Discord Service Domain (discord .com) in TLS SNI [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.90:6164 -> 162.159.135.232:443
+07/30/2025-10:39:42.705298  [**] [1:2035465:4] ET INFO Observed Discord Domain in DNS Lookup (discord .com) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.10.90:64764 -> 210.69.2.1:53
+07/30/2025-10:39:42.705298  [**] [1:2060503:1] ET INFO Discord Chat Service Domain in DNS Lookup (discord .com) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.10.90:64764 -> 210.69.2.1:53
+07/30/2025-10:41:24.759424  [**] [1:2027757:5] ET DNS Query for .to TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:64258 -> 210.69.1.1:53
+07/30/2025-10:41:24.759424  [**] [1:2027757:5] ET DNS Query for .to TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:63442 -> 210.69.1.1:53
+07/30/2025-10:41:55.338403  [**] [1:2047702:1] ET INFO External IP Lookup Domain (ipify .org) in DNS Lookup [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.10.104:54059 -> 210.69.1.1:53
+07/30/2025-10:41:55.337397  [**] [1:2047702:1] ET INFO External IP Lookup Domain (ipify .org) in DNS Lookup [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.10.104:55058 -> 210.69.1.1:53
+07/30/2025-10:41:55.645363  [**] [1:2047703:1] ET INFO External IP Address Lookup Domain (ipify .org) in TLS SNI [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.104:5683 -> 104.26.12.205:443
+07/30/2025-10:43:54.200646  [**] [1:2260001:1] SURICATA Applayer Wrong direction first Data [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.10.30:1728 -> 20.44.10.122:443
+07/30/2025-10:48:29.141443  [**] [1:2049796:5] ET INFO Google DNS Over HTTPS Certificate Inbound [**] [Classification: Misc activity] [Priority: 3] {TCP} 8.8.4.4:853 -> 192.168.10.242:40314
+07/30/2025-10:49:15.512097  [**] [1:2031071:5] ET INFO Microsoft Connection Test [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.102:14306 -> 203.69.81.58:80
+07/30/2025-10:49:30.649742  [**] [1:2014819:5] ET INFO Packed Executable Download [**] [Classification: Misc activity] [Priority: 3] {TCP} 146.75.46.172:80 -> 192.168.10.2:53791
+07/30/2025-10:50:08.701845  [**] [1:2014819:5] ET INFO Packed Executable Download [**] [Classification: Misc activity] [Priority: 3] {TCP} 109.61.38.38:80 -> 192.168.253.34:65486
+07/30/2025-10:50:14.375338  [**] [1:2035465:4] ET INFO Observed Discord Domain in DNS Lookup (discord .com) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:64780 -> 210.69.1.1:53
+07/30/2025-10:50:15.211660  [**] [1:2035463:3] ET INFO Observed Discord Domain (discord .com in TLS SNI) [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.90:6204 -> 162.159.128.233:443
+07/30/2025-10:50:15.310697  [**] [1:2035465:4] ET INFO Observed Discord Domain in DNS Lookup (discord .com) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.10.90:49403 -> 210.69.2.1:53
+07/30/2025-10:50:15.310697  [**] [1:2060503:1] ET INFO Discord Chat Service Domain in DNS Lookup (discord .com) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.10.90:49403 -> 210.69.2.1:53
+07/30/2025-10:50:15.341568  [**] [1:2035463:3] ET INFO Observed Discord Domain (discord .com in TLS SNI) [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.90:6205 -> 162.159.135.232:443
+07/30/2025-10:50:15.341568  [**] [1:2060505:1] ET INFO Observed Discord Service Domain (discord .com) in TLS SNI [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.90:6205 -> 162.159.135.232:443
+07/30/2025-10:50:15.310697  [**] [1:2035465:4] ET INFO Observed Discord Domain in DNS Lookup (discord .com) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.10.90:54960 -> 210.69.2.1:53
+07/30/2025-10:50:15.310697  [**] [1:2060503:1] ET INFO Discord Chat Service Domain in DNS Lookup (discord .com) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.10.90:54960 -> 210.69.2.1:53
+07/30/2025-10:51:29.863116  [**] [1:2047702:1] ET INFO External IP Lookup Domain (ipify .org) in DNS Lookup [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:63516 -> 210.69.1.1:53
+07/30/2025-10:51:29.863116  [**] [1:2047702:1] ET INFO External IP Lookup Domain (ipify .org) in DNS Lookup [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:64876 -> 210.69.1.1:53
+07/30/2025-10:51:30.164804  [**] [1:2047703:1] ET INFO External IP Address Lookup Domain (ipify .org) in TLS SNI [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.61:53878 -> 104.26.12.205:443
+07/30/2025-10:53:23.506317  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.22:60029 -> 219.87.64.165:80
+07/30/2025-10:53:23.690837  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.22:60030 -> 60.250.3.135:80
+07/30/2025-10:53:51.586118  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.43:9615 -> 60.250.3.135:80
+07/30/2025-10:53:51.665770  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.43:9616 -> 219.87.64.165:80
+07/30/2025-10:54:09.789635  [**] [1:2047702:1] ET INFO External IP Lookup Domain (ipify .org) in DNS Lookup [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:63531 -> 210.69.1.1:53

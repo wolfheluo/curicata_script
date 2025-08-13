@@ -1,0 +1,11 @@
+07/30/2025-10:57:01.833701  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.187:11000 -> 219.87.64.165:80
+07/30/2025-10:57:01.839095  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.187:11001 -> 219.87.64.165:80
+07/30/2025-10:57:01.749067  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.187:10999 -> 219.87.64.165:80
+07/30/2025-10:57:13.003031  [**] [1:2260001:1] SURICATA Applayer Wrong direction first Data [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.218:62712 -> 203.65.99.231:7660
+07/30/2025-10:57:22.630149  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 203.65.108.76:47840
+07/30/2025-10:58:02.905776  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.20:8430 -> 60.250.3.135:80
+07/30/2025-10:58:03.091194  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.20:8432 -> 60.250.3.135:80
+07/30/2025-10:58:22.999110  [**] [1:2047702:1] ET INFO External IP Lookup Domain (ipify .org) in DNS Lookup [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:63911 -> 210.69.1.1:53
+07/30/2025-10:58:22.999496  [**] [1:2047702:1] ET INFO External IP Lookup Domain (ipify .org) in DNS Lookup [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:65410 -> 210.69.1.1:53
+07/30/2025-11:00:21.130510  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.80.18:443 -> 192.168.10.94:2193
+07/30/2025-11:00:21.980435  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.1.20:443 -> 192.168.10.94:2196

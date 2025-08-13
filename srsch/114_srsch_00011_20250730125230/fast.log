@@ -1,0 +1,10 @@
+07/30/2025-12:52:37.494681  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.182:3082 -> 219.87.64.165:80
+07/30/2025-12:52:37.598959  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.182:3083 -> 60.250.3.135:80
+07/30/2025-12:53:27.196634  [**] [1:2031071:5] ET INFO Microsoft Connection Test [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.176:10617 -> 203.69.81.51:80
+07/30/2025-12:55:56.917473  [**] [1:2036220:6] ET INFO Android Device Connectivity Check [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.99.252:38768 -> 142.250.77.3:80
+07/30/2025-12:57:19.218029  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 207.219.221.53:54442
+07/30/2025-12:57:32.732640  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 71.204.206.41:42122
+07/30/2025-12:57:44.236649  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 112.184.222.12:34684
+07/30/2025-12:58:02.194788  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 211.252.168.97:35663
+07/30/2025-12:58:30.227423  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 185.148.218.235:51420
+07/30/2025-12:59:23.106334  [**] [1:2260001:1] SURICATA Applayer Wrong direction first Data [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:110 -> 91.223.169.88:39872

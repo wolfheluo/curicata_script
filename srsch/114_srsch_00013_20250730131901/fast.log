@@ -1,0 +1,23 @@
+07/30/2025-13:19:06.329560  [**] [1:2400054:4432] ET DROP Spamhaus DROP Listed Traffic Inbound group 55 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 204.76.203.41:54443 -> 192.168.253.234:80
+07/30/2025-13:20:30.770491  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.1.20:443 -> 192.168.10.175:14667
+07/30/2025-13:26:35.881564  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.80.18:443 -> 192.168.10.179:3891
+07/30/2025-13:26:36.399185  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.6.20:443 -> 192.168.10.179:3893
+07/30/2025-13:27:27.482577  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 181.93.60.253:63611
+07/30/2025-13:27:37.183167  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 154.146.240.123:55882
+07/30/2025-13:27:51.272033  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 119.207.156.209:33130
+07/30/2025-13:28:17.606928  [**] [1:2400030:4432] ET DROP Spamhaus DROP Listed Traffic Inbound group 31 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 165.154.246.246:58914 -> 192.168.253.252:888
+07/30/2025-13:28:20.360342  [**] [1:2400030:4432] ET DROP Spamhaus DROP Listed Traffic Inbound group 31 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 165.154.243.247:49160 -> 192.168.253.252:888
+07/30/2025-13:28:20.937048  [**] [1:2400030:4432] ET DROP Spamhaus DROP Listed Traffic Inbound group 31 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 165.154.243.251:43814 -> 192.168.253.252:888
+07/30/2025-13:30:38.695791  [**] [1:2014819:5] ET INFO Packed Executable Download [**] [Classification: Misc activity] [Priority: 3] {TCP} 146.75.46.172:80 -> 192.168.253.218:57166
+07/30/2025-13:32:39.074725  [**] [1:2031071:5] ET INFO Microsoft Connection Test [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.22:53802 -> 203.69.81.51:80
+07/30/2025-13:34:25.967050  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.50:3409 -> 219.87.64.165:80
+07/30/2025-13:34:25.846748  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.50:3406 -> 60.250.3.135:80
+07/30/2025-13:35:27.567443  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.8.20:443 -> 192.168.10.43:10453
+07/30/2025-13:35:29.078334  [**] [1:2029340:2] ET INFO TLS Handshake Failure [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 23.220.196.176:443 -> 192.168.10.46:52725
+07/30/2025-13:35:30.278113  [**] [1:2029340:2] ET INFO TLS Handshake Failure [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 23.220.196.176:443 -> 192.168.10.46:52727
+07/30/2025-13:36:22.793497  [**] [1:2036220:6] ET INFO Android Device Connectivity Check [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.99.252:58906 -> 142.250.66.67:80
+07/30/2025-13:36:26.173170  [**] [1:2049796:5] ET INFO Google DNS Over HTTPS Certificate Inbound [**] [Classification: Misc activity] [Priority: 3] {TCP} 8.8.4.4:853 -> 192.168.10.243:35050
+07/30/2025-13:36:32.795047  [**] [1:2027757:5] ET DNS Query for .to TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:63416 -> 210.69.1.1:53
+07/30/2025-13:36:44.953083  [**] [1:2036220:6] ET INFO Android Device Connectivity Check [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.99.252:46482 -> 142.250.196.195:80
+07/30/2025-13:37:37.991055  [**] [1:2260001:1] SURICATA Applayer Wrong direction first Data [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.10.60:63714 -> 150.171.28.11:443
+07/30/2025-13:38:11.878550  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 34.227.19.103:57202

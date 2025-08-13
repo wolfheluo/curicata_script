@@ -1,0 +1,11 @@
+07/30/2025-14:54:06.825302  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 85.69.178.104:54226
+07/30/2025-14:56:14.206934  [**] [1:2060502:1] ET INFO Discord Chat Service Domain in DNS Lookup (gateway .discord .gg) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.99.252:18746 -> 210.69.1.1:53
+07/30/2025-14:56:14.294194  [**] [1:2060504:1] ET INFO Observed Discord Service Domain (gateway .discord .gg) in TLS SNI [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.99.252:59430 -> 162.159.135.234:443
+07/30/2025-14:56:32.904789  [**] [1:2400045:4432] ET DROP Spamhaus DROP Listed Traffic Inbound group 46 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 196.251.114.43:37164 -> 192.168.253.35:443
+07/30/2025-14:58:23.448341  [**] [1:2060504:1] ET INFO Observed Discord Service Domain (gateway .discord .gg) in TLS SNI [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.99.252:44594 -> 162.159.130.234:443
+07/30/2025-14:58:24.917435  [**] [1:2035463:3] ET INFO Observed Discord Domain (discord .com in TLS SNI) [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.99.252:38014 -> 162.159.138.232:443
+07/30/2025-14:58:24.917435  [**] [1:2060505:1] ET INFO Observed Discord Service Domain (discord .com) in TLS SNI [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.99.252:38014 -> 162.159.138.232:443
+07/30/2025-14:58:24.867979  [**] [1:2035465:4] ET INFO Observed Discord Domain in DNS Lookup (discord .com) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.99.252:64254 -> 210.69.1.1:53
+07/30/2025-14:58:24.867979  [**] [1:2060503:1] ET INFO Discord Chat Service Domain in DNS Lookup (discord .com) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.99.252:64254 -> 210.69.1.1:53
+07/30/2025-14:58:31.064984  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.1.20:443 -> 192.168.10.64:6028
+07/30/2025-14:59:49.933145  [**] [1:2260000:1] SURICATA Applayer Mismatch protocol both directions [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 3.130.96.91:58096 -> 192.168.253.234:80

@@ -1,0 +1,6 @@
+07/30/2025-14:34:41.393592  [**] [1:2400015:4432] ET DROP Spamhaus DROP Listed Traffic Inbound group 16 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 91.224.92.17:43418 -> 192.168.253.234:80
+07/30/2025-14:35:16.219746  [**] [1:2013505:4] ET INFO GNU/Linux YUM User-Agent Outbound likely related to package management [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 192.168.253.220:51458 -> 37.26.189.194:80
+07/30/2025-14:36:00.717260  [**] [1:2013505:4] ET INFO GNU/Linux YUM User-Agent Outbound likely related to package management [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 192.168.253.216:34218 -> 37.26.189.194:80
+07/30/2025-14:36:18.009451  [**] [1:2036220:6] ET INFO Android Device Connectivity Check [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.99.252:49018 -> 142.250.204.35:80
+07/30/2025-14:36:19.722277  [**] [1:2036220:6] ET INFO Android Device Connectivity Check [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.99.252:49032 -> 142.250.204.35:80
+07/30/2025-14:37:51.975157  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 85.236.187.43:58036

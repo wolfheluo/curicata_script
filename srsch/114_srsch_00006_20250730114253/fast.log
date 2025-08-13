@@ -1,0 +1,38 @@
+07/30/2025-11:43:58.065038  [**] [1:2402000:7460] ET DROP Dshield Block Listed Source group 1 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 185.91.127.107:443 -> 192.168.253.252:443
+07/30/2025-11:46:22.157573  [**] [1:2014819:5] ET INFO Packed Executable Download [**] [Classification: Misc activity] [Priority: 3] {TCP} 146.75.46.172:80 -> 192.168.253.218:49866
+07/30/2025-11:47:13.103156  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:63663 -> 210.69.1.1:53
+07/30/2025-11:47:13.102854  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:64121 -> 210.69.1.1:53
+07/30/2025-11:47:13.558350  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:63155 -> 210.69.1.1:53
+07/30/2025-11:47:13.629228  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:65086 -> 210.69.1.1:53
+07/30/2025-11:47:13.629513  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:65035 -> 210.69.1.1:53
+07/30/2025-11:47:13.951825  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:63953 -> 210.69.1.1:53
+07/30/2025-11:47:13.952614  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:65464 -> 210.69.1.1:53
+07/30/2025-11:47:13.951825  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:64348 -> 210.69.1.1:53
+07/30/2025-11:47:13.558638  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:63418 -> 210.69.1.1:53
+07/30/2025-11:47:13.952278  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:63440 -> 210.69.1.1:53
+07/30/2025-11:47:15.323304  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.123:7859 -> 60.250.3.156:80
+07/30/2025-11:47:15.611866  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:64103 -> 210.69.1.1:53
+07/30/2025-11:47:15.611507  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:65134 -> 210.69.1.1:53
+07/30/2025-11:50:15.563785  [**] [1:2402000:7460] ET DROP Dshield Block Listed Source group 1 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 206.168.34.65:53710 -> 192.168.253.252:888
+07/30/2025-11:50:29.247382  [**] [1:2047702:1] ET INFO External IP Lookup Domain (ipify .org) in DNS Lookup [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:64003 -> 210.69.1.1:53
+07/30/2025-11:50:29.247648  [**] [1:2047702:1] ET INFO External IP Lookup Domain (ipify .org) in DNS Lookup [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:65076 -> 210.69.1.1:53
+07/30/2025-11:50:29.583628  [**] [1:2047703:1] ET INFO External IP Address Lookup Domain (ipify .org) in TLS SNI [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.93:1715 -> 104.26.12.205:443
+07/30/2025-11:50:41.219610  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:63256 -> 210.69.1.1:53
+07/30/2025-11:50:41.219610  [**] [1:2063086:1] ET INFO Observed DNS Query to URL Shortener Domain (reurl .cc) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:63256 -> 210.69.1.1:53
+07/30/2025-11:50:41.219610  [**] [1:2063185:1] ET INFO URL Shortener Service Domain in DNS Lookup (reurl .cc) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:63256 -> 210.69.1.1:53
+07/30/2025-11:50:41.219610  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:63910 -> 210.69.1.1:53
+07/30/2025-11:50:41.219610  [**] [1:2063086:1] ET INFO Observed DNS Query to URL Shortener Domain (reurl .cc) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:63910 -> 210.69.1.1:53
+07/30/2025-11:50:41.219610  [**] [1:2063185:1] ET INFO URL Shortener Service Domain in DNS Lookup (reurl .cc) [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:63910 -> 210.69.1.1:53
+07/30/2025-11:52:20.013424  [**] [1:2403348:102368] ET CINS Active Threat Intelligence Poor Reputation IP group 49 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 35.203.211.69:55563 -> 192.168.253.252:888
+07/30/2025-11:52:22.270246  [**] [1:2047702:1] ET INFO External IP Lookup Domain (ipify .org) in DNS Lookup [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:64427 -> 210.69.1.1:53
+07/30/2025-11:52:22.305273  [**] [1:2047703:1] ET INFO External IP Address Lookup Domain (ipify .org) in TLS SNI [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.95:52222 -> 172.67.74.152:443
+07/30/2025-11:54:02.435711  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 212.120.163.110:49143
+07/30/2025-11:54:57.731275  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.80.18:443 -> 192.168.10.63:14700
+07/30/2025-11:54:58.491238  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.8.20:443 -> 192.168.10.63:14701
+07/30/2025-11:55:50.498594  [**] [1:2400030:4432] ET DROP Spamhaus DROP Listed Traffic Inbound group 31 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 165.154.253.245:58914 -> 192.168.253.35:80
+07/30/2025-11:56:36.817689  [**] [1:2047702:1] ET INFO External IP Lookup Domain (ipify .org) in DNS Lookup [**] [Classification: Misc activity] [Priority: 3] {UDP} 192.168.253.213:63171 -> 210.69.1.1:53
+07/30/2025-11:57:08.610674  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 192.168.99.253:5620
+07/30/2025-11:57:08.610674  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 163.29.42.49:25 -> 192.168.10.23:59138
+07/30/2025-11:57:09.806702  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 74.125.203.27:25 -> 192.168.253.252:46659
+07/30/2025-11:58:11.533247  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 91.86.124.127:54070
+07/30/2025-11:59:26.636130  [**] [1:2027757:5] ET DNS Query for .to TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {UDP} 192.168.253.213:65365 -> 210.69.1.1:53

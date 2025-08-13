@@ -1,0 +1,4 @@
+07/30/2025-12:00:11.818127  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.187:11165 -> 219.87.64.165:80
+07/30/2025-12:00:11.906732  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.187:11168 -> 60.250.3.135:80
+07/30/2025-12:00:11.861279  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.187:11167 -> 60.250.3.135:80
+07/30/2025-12:01:31.938265  [**] [1:2062715:1] ET INFO Observed UA-CPU Header [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.141:10196 -> 23.42.111.19:80

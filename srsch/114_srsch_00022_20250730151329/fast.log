@@ -1,0 +1,18 @@
+07/30/2025-15:13:32.721581  [**] [1:2402000:7460] ET DROP Dshield Block Listed Source group 1 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 198.235.24.208:56380 -> 192.168.253.234:80
+07/30/2025-15:13:34.305712  [**] [1:2403302:102368] ET CINS Active Threat Intelligence Poor Reputation IP group 3 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 3.137.73.221:60018 -> 192.168.253.252:110
+07/30/2025-15:14:01.604655  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 170.250.128.5:43722
+07/30/2025-15:15:23.001965  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 31.173.67.141:48462
+07/30/2025-15:15:38.683928  [**] [1:2032987:1] ET INFO HTTP Request to a *.tw domain [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.177:14530 -> 60.250.3.135:80
+07/30/2025-15:15:39.774153  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 117.253.143.105:63380
+07/30/2025-15:15:59.379108  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 71.62.34.216:37766
+07/30/2025-15:20:05.285372  [**] [1:2402000:7460] ET DROP Dshield Block Listed Source group 1 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 185.91.127.107:443 -> 192.168.253.252:443
+07/30/2025-15:21:36.675132  [**] [1:2260001:1] SURICATA Applayer Wrong direction first Data [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.218:64814 -> 203.65.99.225:7660
+07/30/2025-15:21:52.557664  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.80.18:443 -> 192.168.10.47:3106
+07/30/2025-15:22:04.021400  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.6.20:443 -> 192.168.10.47:3116
+07/30/2025-15:23:43.292730  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.47:3243 -> 210.69.2.1:53
+07/30/2025-15:23:43.293373  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.47:3244 -> 210.69.2.1:53
+07/30/2025-15:24:06.957143  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.47:3276 -> 210.69.2.1:53
+07/30/2025-15:24:06.959233  [**] [1:2027758:5] ET DNS Query for .cc TLD [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.10.47:3275 -> 210.69.2.1:53
+07/30/2025-15:24:14.224351  [**] [1:2260000:1] SURICATA Applayer Mismatch protocol both directions [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 198.235.24.208:63602 -> 192.168.253.234:80
+07/30/2025-15:24:14.633374  [**] [1:2260000:1] SURICATA Applayer Mismatch protocol both directions [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 198.235.24.208:63608 -> 192.168.253.234:80
+07/30/2025-15:24:48.997173  [**] [1:2060252:1] ET INFO Go-http-client User-Agent Observed Inbound [**] [Classification: Misc activity] [Priority: 3] {TCP} 185.91.127.107:48374 -> 192.168.253.35:443

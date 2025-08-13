@@ -1,0 +1,13 @@
+07/30/2025-12:22:07.804913  [**] [1:2400006:4432] ET DROP Spamhaus DROP Listed Traffic Inbound group 7 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 45.194.66.6:52699 -> 192.168.253.35:80
+07/30/2025-12:22:11.012789  [**] [1:2400054:4432] ET DROP Spamhaus DROP Listed Traffic Inbound group 55 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 204.76.203.41:54621 -> 192.168.253.35:80
+07/30/2025-12:23:21.960537  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.80.18:443 -> 192.168.10.163:1193
+07/30/2025-12:23:22.564096  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.6.20:443 -> 192.168.10.163:1194
+07/30/2025-12:24:48.683297  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 64.21.235.162:59102
+07/30/2025-12:25:17.630908  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 85.12.240.14:32978
+07/30/2025-12:25:28.708808  [**] [1:2031071:5] ET INFO Microsoft Connection Test [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.10.174:56081 -> 203.69.81.51:80
+07/30/2025-12:25:29.276277  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 182.225.134.13:56353
+07/30/2025-12:25:42.684319  [**] [1:2400015:4432] ET DROP Spamhaus DROP Listed Traffic Inbound group 16 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 91.224.92.17:51445 -> 192.168.253.234:80
+07/30/2025-12:27:04.355944  [**] [1:2260001:1] SURICATA Applayer Wrong direction first Data [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.218:52745 -> 203.65.99.225:7660
+07/30/2025-12:27:24.934701  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.253.252:25 -> 209.85.221.73:50381
+07/30/2025-12:28:17.285791  [**] [1:2403308:102368] ET CINS Active Threat Intelligence Poor Reputation IP group 9 [**] [Classification: Misc Attack] [Priority: 2] {TCP} 13.221.198.166:55686 -> 192.168.253.252:443
+07/30/2025-12:29:07.201997  [**] [1:2012647:7] ET INFO Dropbox.com Offsite File Backup in Use [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 162.125.6.20:443 -> 192.168.10.26:10541
