@@ -18,9 +18,6 @@ import glob
 from datetime import datetime, timedelta
 from pathlib import Path
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
-import subprocess
-import threading
-import time
 from collections import defaultdict, Counter
 import ipaddress
 import re
@@ -30,66 +27,55 @@ app = Flask(__name__)
 app.secret_key = 'suricata_pcap_analyzer_secret_key_2025'
 
 # 配置
-PCAP_DIR = "pcaps"
 PROJECT_DIR = "project"
-TSHARK_EXE = r"C:\Program Files\Wireshark\tshark.exe"
 
 # 確保目錄存在
-os.makedirs(PCAP_DIR, exist_ok=True)
 os.makedirs(PROJECT_DIR, exist_ok=True)
 
 
 def get_tasks():
-    """取得所有分析任務"""
+    """取得所有分析任務（直接從 project 目錄讀取）"""
     tasks = []
     
-    # 掃描 pcaps 目錄下的資料夾
-    if os.path.exists(PCAP_DIR):
-        for item in os.listdir(PCAP_DIR):
-            item_path = os.path.join(PCAP_DIR, item)
-            if os.path.isdir(item_path):
-                # 檢查是否有 .pcap 檔案
-                pcap_files = glob.glob(os.path.join(item_path, "*.pcap"))
-                if pcap_files:
-                    task = {
-                        'name': item,
-                        'path': item_path,
-                        'pcap_count': len(pcap_files),
-                        'created_time': datetime.fromtimestamp(os.path.getctime(item_path)),
-                        'analyzed': False,
-                        'total_bytes': None,
-                        'total_events': None,
-                        'anomaly_count': 0,
-                        'start_time': None,
-                        'end_time': None
-                    }
-                    
-                    # 檢查是否已分析
-                    project_dir = os.path.join(PROJECT_DIR, item)
-                    summary_file = os.path.join(project_dir, "analysis_summary.json")
-                    
-                    if os.path.exists(summary_file):
-                        try:
-                            with open(summary_file, 'r', encoding='utf-8') as f:
-                                summary = json.load(f)
-                            
-                            task['analyzed'] = True
-                            task['total_bytes'] = summary.get('flow', {}).get('total_bytes', 0)
-                            task['start_time'] = summary.get('flow', {}).get('start_time', '')
-                            task['end_time'] = summary.get('flow', {}).get('end_time', '')
-                            
-                            # 計算總事件數
-                            events = summary.get('event', {})
-                            total_events = sum(event.get('count', 0) for event in events.values())
-                            task['total_events'] = total_events
-                            
-                            # 計算異常數（這裡可以根據實際需求定義異常判斷邏輯）
-                            task['anomaly_count'] = detect_anomalies(summary)
-                            
-                        except Exception as e:
-                            print(f"讀取分析結果失敗: {e}")
-                    
-                    tasks.append(task)
+    # 掃描 project 目錄下的資料夾
+    if os.path.exists(PROJECT_DIR):
+        for item in os.listdir(PROJECT_DIR):
+            project_path = os.path.join(PROJECT_DIR, item)
+            if os.path.isdir(project_path):
+                # 檢查是否有 analysis_summary.json 檔案
+                summary_file = os.path.join(project_path, "analysis_summary.json")
+                if os.path.exists(summary_file):
+                    try:
+                        with open(summary_file, 'r', encoding='utf-8') as f:
+                            summary = json.load(f)
+                        
+                        # 統計分析檔案數量
+                        analysis_files = glob.glob(os.path.join(project_path, "*_analysis.json"))
+                        
+                        task = {
+                            'name': item,
+                            'path': project_path,
+                            'pcap_count': len(analysis_files),  # 使用分析檔案數量代替 pcap 檔案數量
+                            'created_time': datetime.fromtimestamp(os.path.getctime(project_path)),
+                            'analyzed': True,  # project 目錄中的都是已分析的
+                            'total_bytes': summary.get('flow', {}).get('total_bytes', 0),
+                            'start_time': summary.get('flow', {}).get('start_time', ''),
+                            'end_time': summary.get('flow', {}).get('end_time', ''),
+                            'anomaly_count': 0
+                        }
+                        
+                        # 計算總事件數
+                        events = summary.get('event', {})
+                        total_events = sum(event.get('count', 0) for event in events.values())
+                        task['total_events'] = total_events
+                        
+                        # 計算異常數
+                        task['anomaly_count'] = detect_anomalies(summary)
+                        
+                        tasks.append(task)
+                        
+                    except Exception as e:
+                        print(f"讀取分析結果失敗 {item}: {e}")
     
     # 按建立時間排序
     tasks.sort(key=lambda x: x['created_time'], reverse=True)
@@ -139,34 +125,6 @@ def detect_anomalies(summary):
     return anomaly_count
 
 
-def run_analysis(task_name):
-    """執行分析任務"""
-    def analysis_thread():
-        try:
-            print(f"開始分析任務: {task_name}")
-            
-            # 準備執行 2.tshark.py
-            pcap_path = os.path.join(PCAP_DIR, task_name)
-            
-            # 使用 subprocess 執行分析腳本
-            result = subprocess.run([
-                'python', '2.tshark.py'
-            ], input=f"{task_name}\n{pcap_path}\n", 
-               text=True, capture_output=True)
-            
-            if result.returncode == 0:
-                print(f"分析任務 {task_name} 完成")
-            else:
-                print(f"分析任務 {task_name} 失敗: {result.stderr}")
-                
-        except Exception as e:
-            print(f"執行分析任務失敗: {e}")
-    
-    # 在背景執行分析
-    thread = threading.Thread(target=analysis_thread)
-    thread.daemon = True
-    thread.start()
-
 
 @app.route('/')
 def index():
@@ -177,23 +135,17 @@ def index():
 
 @app.route('/analyze/<task_name>')
 def analyze_task(task_name):
-    """開始分析任務"""
+    """檢視分析任務（已分析的項目直接跳轉到儀表板）"""
     # 檢查任務是否存在
     tasks = get_tasks()
     task = next((t for t in tasks if t['name'] == task_name), None)
     
     if not task:
-        flash('任務不存在', 'error')
+        flash('專案不存在', 'error')
         return redirect(url_for('index'))
     
-    # 如果已經分析過，直接跳到結果頁面
-    if task['analyzed']:
-        return redirect(url_for('dashboard', task_name=task_name))
-    
-    # 開始分析
-    run_analysis(task_name)
-    flash(f'已開始分析任務「{task_name}」，請稍後重新整理查看結果', 'success')
-    return redirect(url_for('index'))
+    # 直接跳到結果頁面（因為 project 目錄中的都是已分析的）
+    return redirect(url_for('dashboard', task_name=task_name))
 
 
 @app.route('/dashboard/<task_name>')
@@ -203,7 +155,7 @@ def dashboard(task_name):
     summary_file = os.path.join(PROJECT_DIR, task_name, "analysis_summary.json")
     
     if not os.path.exists(summary_file):
-        flash('分析結果不存在，請先進行分析', 'error')
+        flash('專案不存在或分析結果缺失', 'error')
         return redirect(url_for('index'))
     
     return render_template('dashboard.html', task_name=task_name)
