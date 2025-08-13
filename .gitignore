@@ -27,6 +27,7 @@ backup/*
 
 # PCAPs
 pcaps/*
+project/*
 
 # Project output
 project/*/filtered_merged_fast.log
