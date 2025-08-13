@@ -124,7 +124,7 @@ def main():
     # 設定路徑
     suricata_exe = r"C:\Program Files\Suricata\suricata.exe"
     pcap_dir = pcap_dir.strip()  # 去除首尾空格
-    out_base = code
+    out_base = os.path.join("project", code)
     
     # 檢查 Suricata 是否存在
     if not os.path.exists(suricata_exe):
