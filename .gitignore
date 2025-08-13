@@ -36,6 +36,7 @@ project/*/merged_fast.log
 *.bak
 *.swp
 *.swo
+*.mmdb
 
 # Git
 .git/
