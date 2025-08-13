@@ -3,15 +3,79 @@
 Suricata PCAP 分析腳本
 這個腳本會掃描 pcap 目錄中的所有 .pcap 文件，
 使用 Suricata 進行分析，並將結果合併到一個 fast.log 文件中。
+包含日誌過濾功能，可以去除低優先級和重複的記錄。
 """
 
 import os
 import glob
 import subprocess
 import shutil
+import re
+import sys
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
+
+def extract_key_fields(line):
+    """
+    從日誌行中提取關鍵字段，用於去重和過濾
+    返回 None 表示該行應該被過濾掉
+    """
+    # 過濾 Priority 3 的記錄
+    if "Priority: 3" in line:
+        return None
+    
+    # 過濾特定的 ET INFO 記錄
+    if "ET INFO HTTP Request to a" in line and ".tw domain" in line:
+        return None
+    
+    # 過濾 ET DNS Query for .cc TLD 記錄
+    if "ET DNS Query for .cc TLD" in line:
+        return None
+
+    # 尋找事件開始標記
+    event_start = line.find("[**]")
+    if event_start == -1:
+        return None
+    event = line[event_start:]
+
+    # 提取源IP和目標IP
+    ip_match = re.search(r"(\d{1,3}(?:\.\d{1,3}){3}|[a-fA-F0-9:]+):\d+\s*->\s*(\d{1,3}(?:\.\d{1,3}){3}|[a-fA-F0-9:]+):\d+", line)
+    if not ip_match:
+        return None
+    src_ip, dst_ip = ip_match.groups()
+
+    return (event, src_ip, dst_ip)
+
+def filter_log_file(input_file, output_file):
+    """
+    過濾日誌文件，去除低優先級和重複記錄
+    """
+    if not os.path.exists(input_file):
+        print(f"找不到檔案：{input_file}")
+        return False
+
+    seen = set()
+    count = 0
+
+    try:
+        with open(input_file, "r", encoding="utf-8") as infile, \
+             open(output_file, "w", encoding="utf-8") as outfile:
+
+            for line in infile:
+                key = extract_key_fields(line)
+                if key and key not in seen:
+                    seen.add(key)
+                    outfile.write(line)
+                    count += 1
+
+        print(f"✅ 過濾完成，共保留 {count} 筆 Priority: 1 和 2 的唯一記錄")
+        print(f"📄 過濾結果已儲存至：{output_file}")
+        return True
+        
+    except Exception as e:
+        print(f"錯誤: 過濾日誌文件時發生異常: {e}")
+        return False
 
 def process_pcap_file(pcap_file, out_base, suricata_exe):
     """
@@ -53,6 +117,9 @@ def main():
     # 從用戶獲取代碼
     code = input("請輸入代碼: ")
     pcap_dir = input("請輸入 pcap 目錄: ")
+    
+    filter_logs = True
+
 
     # 設定路徑
     suricata_exe = r"C:\Program Files\Suricata\suricata.exe"
@@ -139,6 +206,15 @@ def main():
                         print(f"警告: 讀取 {fast_log} 時發生錯誤: {e}")
                 
                 print(f"✓ 合併完成，結果儲存於 {merged_fast_path}")
+                
+                # 如果用戶選擇過濾日誌，則進行過濾
+                if filter_logs:
+                    print("開始過濾日誌文件...")
+                    filtered_path = os.path.join(out_base, "filtered_merged_fast.log")
+                    if filter_log_file(merged_fast_path, filtered_path):
+                        print(f"✓ 日誌過濾完成")
+                    else:
+                        print("✗ 日誌過濾失敗")
             else:
                 print("警告: 沒有找到任何 fast.log 文件進行合併")
                 
