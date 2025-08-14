@@ -196,6 +196,8 @@ def analyze_ip_traffic(tshark_exe, pcap_file):
     
     connection_stats = defaultdict(int)
     connection_time_stats = defaultdict(lambda: defaultdict(int))
+    connection_protocols = {}  # 記錄每個連接使用的協議
+    total_traffic = 0  # 計算總流量
     
     for line in lines:
         if '|' in line and line.strip():
@@ -211,13 +213,27 @@ def analyze_ip_traffic(tshark_exe, pcap_file):
                     udp_dst_port = parts[6] if parts[6] else ''
                     frame_len = int(parts[7]) if parts[7] else 0
                     
-                    # 確定使用的端口
-                    src_port = tcp_src_port or udp_src_port or ''
-                    dst_port = tcp_dst_port or udp_dst_port or ''
+                    # 累加總流量
+                    total_traffic += frame_len
+                    
+                    # 確定使用的端口和協議
+                    if tcp_src_port and tcp_dst_port:
+                        src_port = tcp_src_port
+                        dst_port = tcp_dst_port
+                        protocol = 'TCP'
+                    elif udp_src_port and udp_dst_port:
+                        src_port = udp_src_port
+                        dst_port = udp_dst_port
+                        protocol = 'UDP'
+                    else:
+                        src_port = ''
+                        dst_port = ''
+                        protocol = 'OTHER'
                     
                     if src_ip != 'N/A' and dst_ip != 'N/A' and src_port and dst_port:
                         connection = f"{src_ip}:{src_port} -> {dst_ip}:{dst_port}"
                         connection_stats[connection] += frame_len
+                        connection_protocols[connection] = protocol  # 記錄協議
                         
                         # 計算10分鐘時間段
                         if timestamp > 0:
@@ -241,7 +257,8 @@ def analyze_ip_traffic(tshark_exe, pcap_file):
         # 格式化前三名時間段資訊
         top_periods_info = []
         for i, (time_period, period_bytes) in enumerate(top_time_periods, 1):
-            period_percentage = (period_bytes / bytes_total * 100) if bytes_total > 0 else 0
+            # 修正：佔比應該基於總流量，而不是該連接的總流量
+            period_percentage = (period_bytes / total_traffic * 100) if total_traffic > 0 else 0
             top_periods_info.append({
                 'rank': i,
                 'time_period': time_period,
@@ -252,6 +269,7 @@ def analyze_ip_traffic(tshark_exe, pcap_file):
         result.append({
             'connection': connection,
             'bytes': bytes_total,
+            'protocol': connection_protocols.get(connection, 'UNKNOWN'),  # 添加協議資訊
             'top_3_time_periods': top_periods_info
         })
     
@@ -494,6 +512,7 @@ def merge_all_results(results, out_base):
     
     merged_top_ip = defaultdict(int)
     merged_top_ip_time_stats = defaultdict(lambda: defaultdict(int))  # 新增：合併時間段統計
+    merged_top_ip_protocols = {}  # 新增：記錄連接的協議
     merged_events = {}
     merged_geo = defaultdict(int)
     
@@ -532,6 +551,10 @@ def merge_all_results(results, out_base):
                 connection = conn_info['connection']
                 merged_top_ip[connection] += conn_info['bytes']
                 
+                # 記錄協議資訊（以最後出現的為準）
+                if 'protocol' in conn_info:
+                    merged_top_ip_protocols[connection] = conn_info['protocol']
+                
                 # 合併時間段統計
                 if 'top_3_time_periods' in conn_info:
                     for period_info in conn_info['top_3_time_periods']:
@@ -569,10 +592,11 @@ def merge_all_results(results, out_base):
         time_stats = merged_top_ip_time_stats[connection]
         top_time_periods = sorted(time_stats.items(), key=lambda x: x[1], reverse=True)[:3]
         
-        # 格式化前三名時間段資訊
+        # 格式化前三名時間段資訊（佔比基於總流量）
         top_periods_info = []
         for i, (time_period, period_bytes) in enumerate(top_time_periods, 1):
-            period_percentage = (period_bytes / total_bytes * 100) if total_bytes > 0 else 0
+            # 修正：佔比應該基於總流量，而不是該連接的總流量
+            period_percentage = (period_bytes / merged_flow['total_bytes'] * 100) if merged_flow['total_bytes'] > 0 else 0
             top_periods_info.append({
                 'rank': i,
                 'time_period': time_period,
@@ -583,6 +607,7 @@ def merge_all_results(results, out_base):
         top_connections.append({
             'connection': connection,
             'bytes': total_bytes,
+            'protocol': merged_top_ip_protocols.get(connection, 'UNKNOWN'),  # 添加協議資訊
             'top_3_time_periods': top_periods_info
         })
     
