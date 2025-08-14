@@ -86,10 +86,69 @@
                 <div class="card">
                     <div class="card-header">
                         <h5><i class="fas fa-chart-line me-2"></i>每10分鐘流量統計</h5>
+                        <small class="text-muted">點擊圖表上的數據點以查看該時間段的前5大流量排行</small>
                     </div>
                     <div class="card-body">
                         <div class="chart-container">
                             <canvas id="flowChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 10分鐘詳細統計展開區域 -->
+        <div class="row mt-3" id="flowDetailsSection" style="display: none;">
+            <div class="col-12">
+                <div class="card border-info">
+                    <div class="card-header bg-info bg-opacity-10">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">
+                                <i class="fas fa-clock me-2 text-info"></i>
+                                <span id="selectedTimeLabel">選定時間段詳細統計</span>
+                            </h6>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="hideFlowDetails()">
+                                <i class="fas fa-times me-1"></i>關閉
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-database fa-2x text-primary mb-2"></i>
+                                        <h5 id="selectedTimeTotalBytes">-</h5>
+                                        <p class="text-muted mb-0">該時段總流量</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-crown fa-2x text-warning mb-2"></i>
+                                        <h5 id="selectedTimeConnectionCount">-</h5>
+                                        <p class="text-muted mb-0">前5大連接</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h6><i class="fas fa-trophy me-2"></i>前5大流量排行</h6>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th width="80">排名</th>
+                                        <th>連接</th>
+                                        <th width="120">流量</th>
+                                        <th width="100">佔比</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="selectedTimeTopConnections">
+                                    <!-- 詳細連接數據將由 JavaScript 填充 -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -345,6 +404,10 @@ async function loadFlowData() {
     // 生成排序後的時間標籤和對應的數據值
     const sortedFlowData = getSortedFlowData(flowData, data.start_time, data.end_time);
     
+    // 儲存時間對應關係，供點擊事件使用
+    window.flowTimeMapping = Object.keys(flowData).sort();
+    window.hasTopIpDetails = data.top_ip_per_10_minutes && Object.keys(data.top_ip_per_10_minutes).length > 0;
+    
     charts.flow = new Chart(ctx, {
         type: 'line',
         data: {
@@ -355,12 +418,31 @@ async function loadFlowData() {
                 borderColor: 'rgb(75, 192, 192)',
                 backgroundColor: 'rgba(75, 192, 192, 0.1)',
                 tension: 0.4,
-                fill: true
+                fill: true,
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                pointBackgroundColor: 'rgb(75, 192, 192)',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'point'
+            },
+            onHover: (event, activeElements) => {
+                event.native.target.style.cursor = activeElements.length > 0 && window.hasTopIpDetails ? 'pointer' : 'default';
+            },
+            onClick: (event, activeElements) => {
+                if (activeElements.length > 0 && window.hasTopIpDetails) {
+                    const dataIndex = activeElements[0].index;
+                    const timeKey = window.flowTimeMapping[dataIndex];
+                    showFlowDetails(timeKey);
+                }
+            },
             scales: {
                 x: {
                     ticks: {
@@ -381,7 +463,33 @@ async function loadFlowData() {
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return '流量: ' + formatBytes(context.parsed.y);
+                            const timeKey = window.flowTimeMapping[context.dataIndex];
+                            let tooltipText = '流量: ' + formatBytes(context.parsed.y);
+                            if (window.hasTopIpDetails) {
+                                tooltipText += '\n點擊查看前5大流量排行';
+                            }
+                            return tooltipText;
+                        }
+                    }
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        generateLabels: function(chart) {
+                            const original = Chart.defaults.plugins.legend.labels.generateLabels;
+                            const labels = original.call(this, chart);
+                            
+                            if (window.hasTopIpDetails) {
+                                labels.push({
+                                    text: '💡 點擊數據點查看詳細排行',
+                                    fontColor: '#666',
+                                    fillStyle: 'transparent',
+                                    strokeStyle: 'transparent',
+                                    pointStyle: 'line'
+                                });
+                            }
+                            
+                            return labels;
                         }
                     }
                 }
@@ -1104,6 +1212,86 @@ ${anomaly.connection ? `連接資訊：${anomaly.connection}` : ''}
     } catch (e) {
         console.error('複製失敗:', e);
     }
+}
+
+// 顯示特定時間段的流量詳情
+async function showFlowDetails(timeKey) {
+    try {
+        const encodedTimeKey = encodeURIComponent(timeKey);
+        const response = await fetch(`/api/flow_details/${taskName}/${encodedTimeKey}`);
+        const data = await response.json();
+        
+        if (data.error) {
+            alert('載入時間段詳情失敗: ' + data.error);
+            return;
+        }
+        
+        // 顯示詳情區域
+        document.getElementById('flowDetailsSection').style.display = 'block';
+        
+        // 更新標題
+        document.getElementById('selectedTimeLabel').textContent = `${data.time_period} 詳細統計`;
+        
+        // 更新總流量
+        document.getElementById('selectedTimeTotalBytes').textContent = formatBytes(data.total_bytes);
+        
+        // 更新連接數量
+        document.getElementById('selectedTimeConnectionCount').textContent = `${data.top_connections.length} 個`;
+        
+        // 更新表格
+        const tbody = document.getElementById('selectedTimeTopConnections');
+        
+        if (data.top_connections.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center text-muted">
+                        <i class="fas fa-info-circle me-2"></i>
+                        該時間段暫無詳細連接統計
+                    </td>
+                </tr>
+            `;
+        } else {
+            tbody.innerHTML = data.top_connections.map((conn, index) => {
+                const percentage = data.total_bytes > 0 ? ((conn.bytes / data.total_bytes) * 100).toFixed(1) : '0.0';
+                const rankClass = index < 3 ? 'bg-warning' : 'bg-secondary';
+                const rankIcon = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+                
+                return `
+                    <tr>
+                        <td>
+                            <span class="badge ${rankClass}">
+                                ${rankIcon} ${index + 1}
+                            </span>
+                        </td>
+                        <td>
+                            <code class="text-break">${conn.connection}</code>
+                        </td>
+                        <td>
+                            <span class="badge bg-info">${formatBytes(conn.bytes)}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">${percentage}%</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // 滾動到詳情區域
+        document.getElementById('flowDetailsSection').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+        
+    } catch (error) {
+        console.error('載入流量詳情失敗:', error);
+        alert('載入流量詳情失敗，請重試');
+    }
+}
+
+// 隱藏流量詳情
+function hideFlowDetails() {
+    document.getElementById('flowDetailsSection').style.display = 'none';
 }
 
 // HTML 轉義函數

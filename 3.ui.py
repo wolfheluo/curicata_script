@@ -178,6 +178,36 @@ def api_flow(task_name):
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/api/flow_details/<task_name>/<time_period>')
+def api_flow_details(task_name, time_period):
+    """特定時間段的詳細流量統計 API"""
+    try:
+        summary_file = os.path.join(PROJECT_DIR, task_name, "analysis_summary.json")
+        with open(summary_file, 'r', encoding='utf-8') as f:
+            summary = json.load(f)
+        
+        flow_data = summary.get('flow', {})
+        top_ip_per_10_minutes = flow_data.get('top_ip_per_10_minutes', {})
+        
+        # 解碼時間段（可能包含特殊字符）
+        from urllib.parse import unquote
+        decoded_time_period = unquote(time_period)
+        
+        if decoded_time_period not in top_ip_per_10_minutes:
+            return jsonify({'error': f'找不到時間段 {decoded_time_period} 的資料'}), 404
+        
+        result = {
+            'time_period': decoded_time_period,
+            'total_bytes': flow_data.get('per_10_minutes', {}).get(decoded_time_period, 0),
+            'top_connections': top_ip_per_10_minutes[decoded_time_period]
+        }
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/top_ip/<task_name>')
 def api_top_ip(task_name):
     """Top IP API"""
