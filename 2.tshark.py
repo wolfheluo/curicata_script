@@ -188,26 +188,28 @@ def analyze_pcap_basic_info(tshark_exe, pcap_file):
 
 
 def analyze_ip_traffic(tshark_exe, pcap_file):
-    """分析 IP 之間的流量（前20名，包含 port）"""
+    """分析 IP 之間的流量（前20名，包含 port），並記錄每個連接在不同時間段的流量"""
     print(f"🌐 分析 IP 流量: {os.path.basename(pcap_file)}")
     
-    fields = ["ip.src", "ip.dst", "tcp.srcport", "tcp.dstport", "udp.srcport", "udp.dstport", "frame.len"]
+    fields = ["frame.time_epoch", "ip.src", "ip.dst", "tcp.srcport", "tcp.dstport", "udp.srcport", "udp.dstport", "frame.len"]
     lines = run_tshark_command(tshark_exe, pcap_file, fields)
     
     connection_stats = defaultdict(int)
+    connection_time_stats = defaultdict(lambda: defaultdict(int))
     
     for line in lines:
         if '|' in line and line.strip():
             parts = line.split('|')
-            if len(parts) >= 7:
+            if len(parts) >= 8:
                 try:
-                    src_ip = parts[0] if parts[0] else 'N/A'
-                    dst_ip = parts[1] if parts[1] else 'N/A'
-                    tcp_src_port = parts[2] if parts[2] else ''
-                    tcp_dst_port = parts[3] if parts[3] else ''
-                    udp_src_port = parts[4] if parts[4] else ''
-                    udp_dst_port = parts[5] if parts[5] else ''
-                    frame_len = int(parts[6]) if parts[6] else 0
+                    timestamp = float(parts[0]) if parts[0] else 0
+                    src_ip = parts[1] if parts[1] else 'N/A'
+                    dst_ip = parts[2] if parts[2] else 'N/A'
+                    tcp_src_port = parts[3] if parts[3] else ''
+                    tcp_dst_port = parts[4] if parts[4] else ''
+                    udp_src_port = parts[5] if parts[5] else ''
+                    udp_dst_port = parts[6] if parts[6] else ''
+                    frame_len = int(parts[7]) if parts[7] else 0
                     
                     # 確定使用的端口
                     src_port = tcp_src_port or udp_src_port or ''
@@ -217,6 +219,13 @@ def analyze_ip_traffic(tshark_exe, pcap_file):
                         connection = f"{src_ip}:{src_port} -> {dst_ip}:{dst_port}"
                         connection_stats[connection] += frame_len
                         
+                        # 計算10分鐘時間段
+                        if timestamp > 0:
+                            dt = datetime.fromtimestamp(timestamp)
+                            minute_boundary = (dt.minute // 10) * 10
+                            time_key = dt.replace(minute=minute_boundary, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M')
+                            connection_time_stats[connection][time_key] += frame_len
+                        
                 except (ValueError, IndexError):
                     continue
     
@@ -225,9 +234,25 @@ def analyze_ip_traffic(tshark_exe, pcap_file):
     
     result = []
     for connection, bytes_total in sorted_connections:
+        # 獲取該連接的前三個最高流量時間段
+        time_stats = connection_time_stats[connection]
+        top_time_periods = sorted(time_stats.items(), key=lambda x: x[1], reverse=True)[:3]
+        
+        # 格式化前三名時間段資訊
+        top_periods_info = []
+        for i, (time_period, period_bytes) in enumerate(top_time_periods, 1):
+            period_percentage = (period_bytes / bytes_total * 100) if bytes_total > 0 else 0
+            top_periods_info.append({
+                'rank': i,
+                'time_period': time_period,
+                'bytes': period_bytes,
+                'percentage_of_total': round(period_percentage, 2)
+            })
+        
         result.append({
             'connection': connection,
-            'bytes': bytes_total
+            'bytes': bytes_total,
+            'top_3_time_periods': top_periods_info
         })
     
     return result
@@ -468,6 +493,7 @@ def merge_all_results(results, out_base):
     }
     
     merged_top_ip = defaultdict(int)
+    merged_top_ip_time_stats = defaultdict(lambda: defaultdict(int))  # 新增：合併時間段統計
     merged_events = {}
     merged_geo = defaultdict(int)
     
@@ -501,10 +527,17 @@ def merge_all_results(results, out_base):
                         bytes_count = conn_info['bytes']
                         merged_flow['top_ip_per_10_minutes'][time_key][connection] += bytes_count
             
-            # 合併 top_ip 數據
+            # 合併 top_ip 數據（包含時間段統計）
             for conn_info in result['top_ip']:
                 connection = conn_info['connection']
                 merged_top_ip[connection] += conn_info['bytes']
+                
+                # 合併時間段統計
+                if 'top_3_time_periods' in conn_info:
+                    for period_info in conn_info['top_3_time_periods']:
+                        time_period = period_info['time_period']
+                        period_bytes = period_info['bytes']
+                        merged_top_ip_time_stats[connection][time_period] += period_bytes
             
             # 合併 event 數據
             for protocol, protocol_data in result['event'].items():
@@ -529,12 +562,28 @@ def merge_all_results(results, out_base):
                 merged_geo[country_code] += bytes_val
     
     # 整理最終結果
-    # Top IP connections (前20名)
+    # Top IP connections (前20名) - 重新計算前三名時間段
     top_connections = []
     for connection, total_bytes in sorted(merged_top_ip.items(), key=lambda x: x[1], reverse=True)[:20]:
+        # 重新計算該連接的前三個最高流量時間段
+        time_stats = merged_top_ip_time_stats[connection]
+        top_time_periods = sorted(time_stats.items(), key=lambda x: x[1], reverse=True)[:3]
+        
+        # 格式化前三名時間段資訊
+        top_periods_info = []
+        for i, (time_period, period_bytes) in enumerate(top_time_periods, 1):
+            period_percentage = (period_bytes / total_bytes * 100) if total_bytes > 0 else 0
+            top_periods_info.append({
+                'rank': i,
+                'time_period': time_period,
+                'bytes': period_bytes,
+                'percentage_of_total': round(period_percentage, 2)
+            })
+        
         top_connections.append({
             'connection': connection,
-            'bytes': total_bytes
+            'bytes': total_bytes,
+            'top_3_time_periods': top_periods_info
         })
     
     # Events - 重新整理每個協議的前5名連接
