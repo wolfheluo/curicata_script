@@ -188,7 +188,7 @@ def analyze_pcap_basic_info(tshark_exe, pcap_file):
 
 
 def analyze_ip_traffic(tshark_exe, pcap_file):
-    """分析 IP 之間的流量（前20名，包含 port），並記錄每個連接在不同時間段的流量"""
+    """分析 IP 之間的流量（前10名，包含 port），並記錄每個連接在不同時間段的流量"""
     print(f"🌐 分析 IP 流量: {os.path.basename(pcap_file)}")
     
     fields = ["frame.time_epoch", "ip.src", "ip.dst", "tcp.srcport", "tcp.dstport", "udp.srcport", "udp.dstport", "frame.len"]
@@ -229,8 +229,8 @@ def analyze_ip_traffic(tshark_exe, pcap_file):
                 except (ValueError, IndexError):
                     continue
     
-    # 排序並取前20名
-    sorted_connections = sorted(connection_stats.items(), key=lambda x: x[1], reverse=True)[:20]
+    # 排序並取前10名
+    sorted_connections = sorted(connection_stats.items(), key=lambda x: x[1], reverse=True)[:10]
     
     result = []
     for connection, bytes_total in sorted_connections:
@@ -562,9 +562,9 @@ def merge_all_results(results, out_base):
                 merged_geo[country_code] += bytes_val
     
     # 整理最終結果
-    # Top IP connections (前20名) - 重新計算前三名時間段
+    # Top IP connections (前10名) - 重新計算前三名時間段
     top_connections = []
-    for connection, total_bytes in sorted(merged_top_ip.items(), key=lambda x: x[1], reverse=True)[:20]:
+    for connection, total_bytes in sorted(merged_top_ip.items(), key=lambda x: x[1], reverse=True)[:10]:
         # 重新計算該連接的前三個最高流量時間段
         time_stats = merged_top_ip_time_stats[connection]
         top_time_periods = sorted(time_stats.items(), key=lambda x: x[1], reverse=True)[:3]
