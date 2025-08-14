@@ -218,6 +218,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>連線</th>
+                                        <th>協議</th>
                                         <th>流量</th>
                                         <th>操作</th>
                                     </tr>
@@ -249,7 +250,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="card bg-light">
                                     <div class="card-body text-center">
                                         <i class="fas fa-server fa-2x text-primary mb-2"></i>
@@ -258,7 +259,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-network-wired fa-2x text-info mb-2"></i>
+                                        <h6 id="selectedConnectionProtocol">-</h6>
+                                        <p class="text-muted mb-0 small">協議類型</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
                                 <div class="card bg-light">
                                     <div class="card-body text-center">
                                         <i class="fas fa-database fa-2x text-success mb-2"></i>
@@ -267,7 +277,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="card bg-light">
                                     <div class="card-body text-center">
                                         <i class="fas fa-clock fa-2x text-warning mb-2"></i>
@@ -667,10 +677,18 @@ async function loadTopIpData() {
     
     // 表格
     const tableBody = document.querySelector('#topIpTable tbody');
-    tableBody.innerHTML = data.slice(0, 20).map((item, index) => `
+    tableBody.innerHTML = data.slice(0, 20).map((item, index) => {
+        // 獲取協議資訊並設定對應的標誌顏色
+        const protocol = item.protocol || 'UNKNOWN';
+        const protocolBadgeClass = getProtocolBadgeClass(protocol);
+        
+        return `
         <tr>
             <td>${index + 1}</td>
             <td><code class="text-break">${item.connection}</code></td>
+            <td>
+                <span class="badge ${protocolBadgeClass}">${protocol}</span>
+            </td>
             <td>${formatBytes(item.bytes)}</td>
             <td>
                 <button class="btn btn-sm btn-outline-primary" onclick="showTopIpDetails(${index})" title="查看高流量時間段">
@@ -678,7 +696,8 @@ async function loadTopIpData() {
                 </button>
             </td>
         </tr>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // 載入國別資料
@@ -1141,6 +1160,17 @@ function getSortedFlowData(flowData, startTime, endTime) {
     return { labels, values };
 }
 
+// 取得協議標誌樣式類別
+function getProtocolBadgeClass(protocol) {
+    const protocolColors = {
+        'TCP': 'bg-primary',
+        'UDP': 'bg-success', 
+        'OTHER': 'bg-secondary',
+        'UNKNOWN': 'bg-light text-dark'
+    };
+    return protocolColors[protocol] || 'bg-secondary';
+}
+
 // 取得事件圖示
 function getEventIcon(eventType) {
     const icons = {
@@ -1499,6 +1529,7 @@ function showTopIpDetails(connectionIndex) {
     
     const connectionData = window.topIpData[connectionIndex];
     const timePeriods = connectionData.top_3_time_periods || [];
+    const protocol = connectionData.protocol || 'UNKNOWN';
     
     // 顯示詳情區域
     document.getElementById('topIpDetailsSection').style.display = 'block';
@@ -1507,6 +1538,12 @@ function showTopIpDetails(connectionIndex) {
     document.getElementById('selectedConnectionLabel').textContent = `${connectionData.connection} - 高流量時間段分析`;
     document.getElementById('selectedConnectionName').textContent = connectionData.connection;
     document.getElementById('selectedConnectionName').title = connectionData.connection;
+    
+    // 顯示協議資訊
+    const protocolElement = document.getElementById('selectedConnectionProtocol');
+    const protocolBadgeClass = getProtocolBadgeClass(protocol);
+    protocolElement.innerHTML = `<span class="badge ${protocolBadgeClass}">${protocol}</span>`;
+    
     document.getElementById('selectedConnectionTotalBytes').textContent = formatBytes(connectionData.bytes);
     document.getElementById('selectedConnectionPeriodCount').textContent = `${timePeriods.length} 個時段`;
     
@@ -1547,6 +1584,8 @@ function showTopIpDetails(connectionIndex) {
                     </td>
                     <td>
                         <span class="badge bg-success">${period.percentage_of_total}%</span>
+                        <br>
+                        <small class="text-muted">佔總流量</small>
                     </td>
                     <td>
                         <span class="badge bg-info">${formatBytes(flowDensity)}/min</span>
