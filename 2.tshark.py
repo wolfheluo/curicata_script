@@ -495,8 +495,8 @@ def merge_all_results(results, out_base):
             
             # 合併每個10分鐘區間的前5名IP統計
             if 'top_ip_per_10_minutes' in flow:
-                for time_key, top_connections in flow['top_ip_per_10_minutes'].items():
-                    for conn_info in top_connections:
+                for time_key, top_conn_list in flow['top_ip_per_10_minutes'].items():
+                    for conn_info in top_conn_list:
                         connection = conn_info['connection']
                         bytes_count = conn_info['bytes']
                         merged_flow['top_ip_per_10_minutes'][time_key][connection] += bytes_count
@@ -571,13 +571,13 @@ def merge_all_results(results, out_base):
     for time_key in sorted(merged_flow['top_ip_per_10_minutes'].keys()):
         ip_traffic = merged_flow['top_ip_per_10_minutes'][time_key]
         # 排序並取前5名
-        top_connections = sorted(ip_traffic.items(), key=lambda x: x[1], reverse=True)[:5]
+        top_interval_connections = sorted(ip_traffic.items(), key=lambda x: x[1], reverse=True)[:5]
         final_top_ip_per_10_minutes[time_key] = [
             {
                 'connection': connection,
                 'bytes': bytes_count
             }
-            for connection, bytes_count in top_connections
+            for connection, bytes_count in top_interval_connections
         ]
     
     merged_flow['top_ip_per_10_minutes'] = final_top_ip_per_10_minutes
