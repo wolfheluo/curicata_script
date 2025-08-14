@@ -572,8 +572,22 @@ async function loadGeoData() {
     const sortedCountries = Object.entries(data)
         .sort((a, b) => b[1] - a[1]);
     
-    const countries = sortedCountries.map(([country, count]) => country);
-    const counts = sortedCountries.map(([country, count]) => count);
+    // 只取前10名，其餘歸類為"其他"
+    const top10Countries = sortedCountries.slice(0, 10);
+    const othersData = sortedCountries.slice(10);
+    
+    // 計算"其他"的總數
+    const othersTotal = othersData.reduce((sum, [country, count]) => sum + count, 0);
+    
+    // 準備圖表數據
+    let chartCountries = top10Countries.map(([country, count]) => country);
+    let chartCounts = top10Countries.map(([country, count]) => count);
+    
+    // 如果有其他國家，添加到數據中
+    if (othersTotal > 0) {
+        chartCountries.push('其他');
+        chartCounts.push(othersTotal);
+    }
     
     // 圓餅圖
     const ctx = document.getElementById('geoChart').getContext('2d');
@@ -585,13 +599,13 @@ async function loadGeoData() {
     charts.geo = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: countries,
+            labels: chartCountries,
             datasets: [{
-                data: counts,
+                data: chartCounts,
                 backgroundColor: [
                     '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-                    '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF',
-                    '#4BC0C0', '#FF6384'
+                    '#9966FF', '#FF9F40', '#FF8C69', '#20B2AA',
+                    '#9370DB', '#32CD32', '#D3D3D3'  // 最後一個灰色代表"其他"
                 ]
             }]
         },
@@ -601,6 +615,21 @@ async function loadGeoData() {
             plugins: {
                 legend: {
                     position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed;
+                            const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            
+                            if (label === '其他') {
+                                return `其他 (${othersData.length}個國家): ${value.toLocaleString()} (${percentage}%)`;
+                            }
+                            return `${label}: ${value.toLocaleString()} (${percentage}%)`;
+                        }
+                    }
                 }
             }
         }
@@ -608,20 +637,69 @@ async function loadGeoData() {
     
     // 國別清單
     const geoList = document.getElementById('geoList');
-    const total = counts.reduce((sum, count) => sum + count, 0);
+    const total = chartCounts.reduce((sum, count) => sum + count, 0);
     
-    geoList.innerHTML = sortedCountries.map(([country, count], index) => {
+    // 生成前10名的清單
+    let listHtml = top10Countries.map(([country, count], index) => {
         const percentage = ((count / total) * 100).toFixed(1);
         return `
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <span><span class="badge bg-secondary me-2">${index + 1}</span><strong>${country}</strong></span>
                 <div>
-                    <span class="badge bg-primary me-2">${count}</span>
+                    <span class="badge bg-primary me-2">${count.toLocaleString()}</span>
                     <span class="text-muted">${percentage}%</span>
                 </div>
             </div>
         `;
-    }).join('');
+    });
+    
+    // 如果有其他國家，添加"其他"項目
+    if (othersTotal > 0) {
+        const othersPercentage = ((othersTotal / total) * 100).toFixed(1);
+        listHtml.push(`
+            <div class="d-flex justify-content-between align-items-center mb-2 border-top pt-2">
+                <span>
+                    <span class="badge bg-light text-dark me-2">其他</span>
+                    <strong>其他 (${othersData.length}個國家)</strong>
+                </span>
+                <div>
+                    <span class="badge bg-secondary me-2">${othersTotal.toLocaleString()}</span>
+                    <span class="text-muted">${othersPercentage}%</span>
+                </div>
+            </div>
+        `);
+        
+        // 添加可展開的其他國家詳細清單
+        if (othersData.length > 0) {
+            listHtml.push(`
+                <div class="mt-2">
+                    <button class="btn btn-sm btn-outline-secondary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#otherCountriesCollapse" aria-expanded="false">
+                        <i class="fas fa-eye me-1"></i>查看其他國家詳情
+                        <i class="fas fa-chevron-down ms-1"></i>
+                    </button>
+                    <div class="collapse mt-2" id="otherCountriesCollapse">
+                        <div class="card card-body bg-light">
+                            <h6 class="mb-2"><i class="fas fa-list me-1"></i>其他國家清單：</h6>
+                            ${othersData.map(([country, count], index) => {
+                                const percentage = ((count / total) * 100).toFixed(1);
+                                return `
+                                    <div class="d-flex justify-content-between align-items-center mb-1 small">
+                                        <span><span class="badge bg-light text-dark me-1">${index + 11}</span>${country}</span>
+                                        <div>
+                                            <span class="badge bg-outline-primary me-1">${count.toLocaleString()}</span>
+                                            <span class="text-muted">${percentage}%</span>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+    }
+    
+    geoList.innerHTML = listHtml.join('');
 }
 
 // 載入事件資料
