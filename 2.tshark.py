@@ -91,8 +91,8 @@ def analyze_pcap_basic_info(tshark_exe, pcap_file):
     """分析 PCAP 文件的基本信息：時長、封包數、總流量"""
     print(f"📊 分析基本信息: {os.path.basename(pcap_file)}")
     
-    # 獲取基本統計信息
-    fields = ["frame.time_epoch", "frame.len"]
+    # 獲取基本統計信息，包含IP和端口信息
+    fields = ["frame.time_epoch", "frame.len", "ip.src", "ip.dst", "tcp.srcport", "tcp.dstport", "udp.srcport", "udp.dstport"]
     lines = run_tshark_command(tshark_exe, pcap_file, fields)
     
     if not lines or lines == ['']:
@@ -102,16 +102,56 @@ def analyze_pcap_basic_info(tshark_exe, pcap_file):
     total_bytes = 0
     packet_count = 0
     
+    # 用於儲存每個10分鐘區間的統計
+    per_10_minutes = {}
+    per_10_minutes_ip_traffic = {}
+    
     for line in lines:
         if '|' in line:
             parts = line.split('|')
-            if len(parts) >= 2:
+            if len(parts) >= 8:
                 try:
                     timestamp = float(parts[0])
                     frame_len = int(parts[1])
+                    src_ip = parts[2] if parts[2] else ''
+                    dst_ip = parts[3] if parts[3] else ''
+                    tcp_src_port = parts[4] if parts[4] else ''
+                    tcp_dst_port = parts[5] if parts[5] else ''
+                    udp_src_port = parts[6] if parts[6] else ''
+                    udp_dst_port = parts[7] if parts[7] else ''
+                    
                     timestamps.append(timestamp)
                     total_bytes += frame_len
                     packet_count += 1
+                    
+                    # 將時間戳轉換為 datetime
+                    dt = datetime.fromtimestamp(timestamp)
+                    
+                    # 計算10分鐘邊界：將分鐘數向下取整到10的倍數
+                    minute_boundary = (dt.minute // 10) * 10
+                    time_key = dt.replace(minute=minute_boundary, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M')
+                    
+                    # 初始化時間區間統計
+                    if time_key not in per_10_minutes:
+                        per_10_minutes[time_key] = 0
+                        per_10_minutes_ip_traffic[time_key] = defaultdict(int)
+                    
+                    # 累加此時間區間的流量
+                    per_10_minutes[time_key] += frame_len
+                    
+                    # 統計此時間區間的IP連接流量（包含端口）
+                    if src_ip and dst_ip:
+                        # 確定使用的端口
+                        src_port = tcp_src_port or udp_src_port or ''
+                        dst_port = tcp_dst_port or udp_dst_port or ''
+                        
+                        if src_port and dst_port:
+                            connection = f"{src_ip}:{src_port} -> {dst_ip}:{dst_port}"
+                        else:
+                            connection = f"{src_ip} -> {dst_ip}"
+                        
+                        per_10_minutes_ip_traffic[time_key][connection] += frame_len
+                    
                 except (ValueError, IndexError):
                     continue
     
@@ -120,41 +160,30 @@ def analyze_pcap_basic_info(tshark_exe, pcap_file):
     
     start_time = min(timestamps)
     end_time = max(timestamps)
-    duration_seconds = end_time - start_time
-    
-    # 計算 10 分鐘區間統計
-    per_10_minutes = {}
-    
-    for i, timestamp in enumerate(timestamps):
-        # 將時間戳轉換為 datetime
-        dt = datetime.fromtimestamp(timestamp)
-        
-        # 計算10分鐘邊界：將分鐘數向下取整到10的倍數
-        # 例如：13:56 -> 13:50, 14:02 -> 14:00
-        minute_boundary = (dt.minute // 10) * 10
-        # 使用日期+時間格式，避免跨天問題
-        time_key = dt.replace(minute=minute_boundary, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M')
-        
-        if time_key not in per_10_minutes:
-            per_10_minutes[time_key] = 0
-        
-        # 加上這個封包的大小
-        try:
-            line = lines[i]
-            if '|' in line:
-                frame_len = int(line.split('|')[1])
-                per_10_minutes[time_key] += frame_len
-        except (ValueError, IndexError):
-            continue
     
     # 按時間排序 per_10_minutes
     sorted_per_10_minutes = dict(sorted(per_10_minutes.items()))
+    
+    # 為每個10分鐘區間生成前5名IP流量統計
+    top_ip_per_10_minutes = {}
+    for time_key in sorted(per_10_minutes_ip_traffic.keys()):
+        ip_traffic = per_10_minutes_ip_traffic[time_key]
+        # 排序並取前5名
+        top_connections = sorted(ip_traffic.items(), key=lambda x: x[1], reverse=True)[:5]
+        top_ip_per_10_minutes[time_key] = [
+            {
+                'connection': connection,
+                'bytes': bytes_count
+            }
+            for connection, bytes_count in top_connections
+        ]
     
     return {
         'start_time': datetime.fromtimestamp(start_time).isoformat(),
         'end_time': datetime.fromtimestamp(end_time).isoformat(),
         'total_bytes': total_bytes,
-        'per_10_minutes': sorted_per_10_minutes
+        'per_10_minutes': sorted_per_10_minutes,
+        'top_ip_per_10_minutes': top_ip_per_10_minutes
     }
 
 
@@ -434,7 +463,8 @@ def merge_all_results(results, out_base):
         'start_time': None,
         'end_time': None,
         'total_bytes': 0,
-        'per_10_minutes': defaultdict(int)
+        'per_10_minutes': defaultdict(int),
+        'top_ip_per_10_minutes': defaultdict(lambda: defaultdict(int))
     }
     
     merged_top_ip = defaultdict(int)
@@ -462,6 +492,14 @@ def merge_all_results(results, out_base):
             # 合併 10 分鐘統計
             for time_key, bytes_val in flow['per_10_minutes'].items():
                 merged_flow['per_10_minutes'][time_key] += bytes_val
+            
+            # 合併每個10分鐘區間的前5名IP統計
+            if 'top_ip_per_10_minutes' in flow:
+                for time_key, top_connections in flow['top_ip_per_10_minutes'].items():
+                    for conn_info in top_connections:
+                        connection = conn_info['connection']
+                        bytes_count = conn_info['bytes']
+                        merged_flow['top_ip_per_10_minutes'][time_key][connection] += bytes_count
             
             # 合併 top_ip 數據
             for conn_info in result['top_ip']:
@@ -527,6 +565,22 @@ def merge_all_results(results, out_base):
     # 轉換 per_10_minutes 為普通 dict 並按時間排序
     sorted_per_10_minutes = dict(sorted(merged_flow['per_10_minutes'].items()))
     merged_flow['per_10_minutes'] = sorted_per_10_minutes
+    
+    # 處理每個10分鐘區間的前5名IP統計
+    final_top_ip_per_10_minutes = {}
+    for time_key in sorted(merged_flow['top_ip_per_10_minutes'].keys()):
+        ip_traffic = merged_flow['top_ip_per_10_minutes'][time_key]
+        # 排序並取前5名
+        top_connections = sorted(ip_traffic.items(), key=lambda x: x[1], reverse=True)[:5]
+        final_top_ip_per_10_minutes[time_key] = [
+            {
+                'connection': connection,
+                'bytes': bytes_count
+            }
+            for connection, bytes_count in top_connections
+        ]
+    
+    merged_flow['top_ip_per_10_minutes'] = final_top_ip_per_10_minutes
     
     total_summary = {
         'summary': {
