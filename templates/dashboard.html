@@ -218,7 +218,6 @@
                                     <tr>
                                         <th>#</th>
                                         <th>連線</th>
-                                        <th>協議</th>
                                         <th>流量</th>
                                         <th>操作</th>
                                     </tr>
@@ -678,17 +677,10 @@ async function loadTopIpData() {
     // 表格
     const tableBody = document.querySelector('#topIpTable tbody');
     tableBody.innerHTML = data.slice(0, 20).map((item, index) => {
-        // 獲取協議資訊並設定對應的標誌顏色
-        const protocol = item.protocol || 'UNKNOWN';
-        const protocolBadgeClass = getProtocolBadgeClass(protocol);
-        
         return `
         <tr>
             <td>${index + 1}</td>
             <td><code class="text-break">${item.connection}</code></td>
-            <td>
-                <span class="badge ${protocolBadgeClass}">${protocol}</span>
-            </td>
             <td>${formatBytes(item.bytes)}</td>
             <td>
                 <button class="btn btn-sm btn-outline-primary" onclick="showTopIpDetails(${index})" title="查看高流量時間段">
