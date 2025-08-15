@@ -141,16 +141,21 @@ def analyze_pcap_basic_info(tshark_exe, pcap_file):
                     
                     # 統計此時間區間的IP連接流量（包含端口）
                     if src_ip and dst_ip:
-                        # 確定使用的端口
-                        src_port = tcp_src_port or udp_src_port or ''
-                        dst_port = tcp_dst_port or udp_dst_port or ''
+                        # 使用新的解析方法處理多個IP/端口的情況
+                        tcp_src = tcp_src_port if tcp_src_port else ''
+                        tcp_dst = tcp_dst_port if tcp_dst_port else ''
+                        udp_src = udp_src_port if udp_src_port else ''
+                        udp_dst = udp_dst_port if udp_dst_port else ''
                         
-                        if src_port and dst_port:
-                            connection = f"{src_ip}:{src_port} -> {dst_ip}:{dst_port}"
-                        else:
-                            connection = f"{src_ip} -> {dst_ip}"
+                        # 優先使用TCP端口，如果沒有則使用UDP端口
+                        final_src_port = tcp_src or udp_src
+                        final_dst_port = tcp_dst or udp_dst
                         
-                        per_10_minutes_ip_traffic[time_key][connection] += frame_len
+                        # 創建標準化的連接字符串
+                        connection = create_connection_string(src_ip, dst_ip, final_src_port, final_dst_port)
+                        
+                        if connection:  # 只有當連接字符串有效時才記錄
+                            per_10_minutes_ip_traffic[time_key][connection] += frame_len
                     
                 except (ValueError, IndexError):
                     continue
@@ -217,6 +222,10 @@ def analyze_ip_traffic(tshark_exe, pcap_file):
                     total_traffic += frame_len
                     
                     # 確定使用的端口和協議
+                    src_port = ''
+                    dst_port = ''
+                    protocol = 'OTHER'
+                    
                     if tcp_src_port and tcp_dst_port:
                         src_port = tcp_src_port
                         dst_port = tcp_dst_port
@@ -225,22 +234,21 @@ def analyze_ip_traffic(tshark_exe, pcap_file):
                         src_port = udp_src_port
                         dst_port = udp_dst_port
                         protocol = 'UDP'
-                    else:
-                        src_port = ''
-                        dst_port = ''
-                        protocol = 'OTHER'
                     
-                    if src_ip != 'N/A' and dst_ip != 'N/A' and src_port and dst_port:
-                        connection = f"{src_ip}:{src_port} -> {dst_ip}:{dst_port}"
-                        connection_stats[connection] += frame_len
-                        connection_protocols[connection] = protocol  # 記錄協議
+                    if src_ip != 'N/A' and dst_ip != 'N/A':
+                        # 使用新的解析方法創建連接字符串
+                        connection = create_connection_string(src_ip, dst_ip, src_port, dst_port)
                         
-                        # 計算10分鐘時間段
-                        if timestamp > 0:
-                            dt = datetime.fromtimestamp(timestamp)
-                            minute_boundary = (dt.minute // 10) * 10
-                            time_key = dt.replace(minute=minute_boundary, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M')
-                            connection_time_stats[connection][time_key] += frame_len
+                        if connection:  # 只有當連接字符串有效時才記錄
+                            connection_stats[connection] += frame_len
+                            connection_protocols[connection] = protocol  # 記錄協議
+                            
+                            # 計算10分鐘時間段
+                            if timestamp > 0:
+                                dt = datetime.fromtimestamp(timestamp)
+                                minute_boundary = (dt.minute // 10) * 10
+                                time_key = dt.replace(minute=minute_boundary, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M')
+                                connection_time_stats[connection][time_key] += frame_len
                         
                 except (ValueError, IndexError):
                     continue
@@ -348,9 +356,14 @@ def analyze_protocols(tshark_exe, pcap_file):
                         
                         # 統計連接
                         if src_ip != 'N/A' and dst_ip != 'N/A':
-                            conn_key = f"{src_ip} -> {dst_ip}"
-                            target_stats['connections'][conn_key]['packet_count'] += 1
-                            target_stats['connections'][conn_key]['packet_size'] += frame_len
+                            # 使用新的解析方法處理多個IP的情況
+                            primary_src_ip = parse_multiple_values(src_ip, "ip")
+                            primary_dst_ip = parse_multiple_values(dst_ip, "ip")
+                            
+                            if primary_src_ip and primary_dst_ip:
+                                conn_key = f"{primary_src_ip} -> {primary_dst_ip}"
+                                target_stats['connections'][conn_key]['packet_count'] += 1
+                                target_stats['connections'][conn_key]['packet_size'] += frame_len
                             
                 except (ValueError, IndexError):
                     continue
@@ -410,15 +423,19 @@ def analyze_ip_countries(tshark_exe, pcap_file, geo_reader):
                     
                     # 處理來源 IP
                     if src_ip:
-                        country_code = get_country_code(geo_reader, src_ip)
-                        if country_code:
-                            country_bytes[country_code] += frame_len
+                        primary_src_ip = parse_multiple_values(src_ip, "ip")
+                        if primary_src_ip:
+                            country_code = get_country_code(geo_reader, primary_src_ip)
+                            if country_code:
+                                country_bytes[country_code] += frame_len
                     
                     # 處理目標 IP
                     if dst_ip:
-                        country_code = get_country_code(geo_reader, dst_ip)
-                        if country_code:
-                            country_bytes[country_code] += frame_len
+                        primary_dst_ip = parse_multiple_values(dst_ip, "ip")
+                        if primary_dst_ip:
+                            country_code = get_country_code(geo_reader, primary_dst_ip)
+                            if country_code:
+                                country_bytes[country_code] += frame_len
                             
                 except (ValueError, IndexError):
                     continue
@@ -427,6 +444,144 @@ def analyze_ip_countries(tshark_exe, pcap_file, geo_reader):
     result = dict(sorted(country_bytes.items(), key=lambda x: x[1], reverse=True))
     
     return result
+
+
+def parse_multiple_values(value_string, value_type="ip"):
+    """
+    解析可能包含多個值的字符串（用逗號分隔）
+    
+    Args:
+        value_string: 輸入字符串，可能包含多個值
+        value_type: 值的類型 ("ip" 或 "port")
+    
+    Returns:
+        主要值（第一個有效值）或 None
+    """
+    if not value_string or value_string == '':
+        return None
+    
+    # 如果沒有逗號，直接返回
+    if ',' not in value_string:
+        return value_string.strip()
+    
+    # 分割並處理多個值
+    values = [v.strip() for v in value_string.split(',') if v.strip()]
+    
+    if not values:
+        return None
+    
+    if value_type == "ip":
+        # 對於IP地址，優先選擇非本地IP
+        for value in values:
+            try:
+                ip_obj = ipaddress.ip_address(value)
+                # 優先選擇公共IP
+                if not (ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_multicast):
+                    return value
+            except ValueError:
+                continue
+        
+        # 如果都是私有IP，選擇第一個有效的
+        for value in values:
+            try:
+                ipaddress.ip_address(value)
+                return value
+            except ValueError:
+                continue
+                
+    elif value_type == "port":
+        # 對於端口，選擇第一個有效的
+        for value in values:
+            try:
+                port_num = int(value)
+                if 0 <= port_num <= 65535:
+                    return value
+            except ValueError:
+                continue
+    
+    # 如果都無效，返回第一個值
+    return values[0] if values else None
+
+
+def create_connection_string(src_ip, dst_ip, src_port, dst_port):
+    """
+    創建規範化的連接字符串
+    
+    Args:
+        src_ip, dst_ip: 源和目標IP地址
+        src_port, dst_port: 源和目標端口
+    
+    Returns:
+        標準化的連接字符串或 None（如果數據無效）
+    """
+    # 解析多個IP地址，選擇主要的
+    primary_src_ip = parse_multiple_values(src_ip, "ip")
+    primary_dst_ip = parse_multiple_values(dst_ip, "ip")
+    
+    if not primary_src_ip or not primary_dst_ip:
+        return None
+    
+    # 解析端口
+    primary_src_port = parse_multiple_values(src_port, "port") if src_port else ''
+    primary_dst_port = parse_multiple_values(dst_port, "port") if dst_port else ''
+    
+    # 構建連接字符串
+    if primary_src_port and primary_dst_port:
+        return f"{primary_src_ip}:{primary_src_port} -> {primary_dst_ip}:{primary_dst_port}"
+    else:
+        return f"{primary_src_ip} -> {primary_dst_ip}"
+
+
+def validate_ip_port_data(src_ip, dst_ip, src_port, dst_port):
+    """
+    驗證IP和端口數據的完整性，檢查是否包含異常格式
+    返回 (is_valid, error_message)
+    """
+    # 檢查IP地址是否包含多個IP（用逗號分隔）
+    if src_ip and ',' in src_ip:
+        return False, f"來源IP包含多個地址: {src_ip}"
+    
+    if dst_ip and ',' in dst_ip:
+        return False, f"目標IP包含多個地址: {dst_ip}"
+    
+    # 檢查端口是否包含多個端口（用逗號分隔）
+    if src_port and ',' in src_port:
+        return False, f"來源端口包含多個端口: {src_port}"
+    
+    if dst_port and ',' in dst_port:
+        return False, f"目標端口包含多個端口: {dst_port}"
+    
+    # 檢查IP地址格式是否正確
+    if src_ip:
+        try:
+            ipaddress.ip_address(src_ip)
+        except ValueError:
+            return False, f"來源IP格式錯誤: {src_ip}"
+    
+    if dst_ip:
+        try:
+            ipaddress.ip_address(dst_ip)
+        except ValueError:
+            return False, f"目標IP格式錯誤: {dst_ip}"
+    
+    # 檢查端口範圍
+    if src_port:
+        try:
+            port_num = int(src_port)
+            if not (0 <= port_num <= 65535):
+                return False, f"來源端口超出範圍: {src_port}"
+        except ValueError:
+            return False, f"來源端口格式錯誤: {src_port}"
+    
+    if dst_port:
+        try:
+            port_num = int(dst_port)
+            if not (0 <= port_num <= 65535):
+                return False, f"目標端口超出範圍: {dst_port}"
+        except ValueError:
+            return False, f"目標端口格式錯誤: {dst_port}"
+    
+    return True, ""
 
 
 def get_country_code(geo_reader, ip_address):
