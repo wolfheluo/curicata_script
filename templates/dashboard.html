@@ -837,21 +837,48 @@ async function loadEventData() {
     const data = await response.json();
     
     const eventStats = document.getElementById('eventStats');
-    eventStats.innerHTML = Object.entries(data).map(([eventType, eventData]) => `
+    eventStats.innerHTML = Object.entries(data).map(([eventType, eventData]) => {
+        // 處理主要來源IP的顯示
+        let topIpDisplay = 'N/A';
+        if (eventData.top_ip) {
+            if (typeof eventData.top_ip === 'string') {
+                // 如果是字串，檢查是否包含多個IP（以逗號或其他分隔符分隔）
+                const ips = eventData.top_ip.split(/[,;|\s]+/).filter(ip => ip.trim().length > 0);
+                if (ips.length > 1) {
+                    // 取前2個IP，每個換行顯示
+                    const displayIps = ips.slice(0, 2);
+                    topIpDisplay = displayIps.map(ip => `<div class="text-truncate">${ip.trim()}</div>`).join('');
+                } else {
+                    topIpDisplay = `<div class="text-truncate">${eventData.top_ip}</div>`;
+                }
+            } else if (Array.isArray(eventData.top_ip)) {
+                // 如果是陣列，取前2個
+                const displayIps = eventData.top_ip.slice(0, 2);
+                topIpDisplay = displayIps.map(ip => `<div class="text-truncate">${ip}</div>`).join('');
+            } else {
+                topIpDisplay = `<div class="text-truncate">${eventData.top_ip}</div>`;
+            }
+        }
+        
+        return `
         <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
             <div class="card text-center event-card h-100" style="cursor: pointer;" onclick="showEventDetails('${eventType}')">
                 <div class="card-body d-flex flex-column">
                     <i class="fas fa-${getEventIcon(eventType)} fa-2x text-primary mb-2"></i>
                     <h5 class="mb-2">${eventData.count || 0}</h5>
                     <p class="card-text mb-2 flex-grow-1">${eventType}</p>
-                    <small class="text-muted mb-2">主要來源: ${eventData.top_ip || 'N/A'}</small>
+                    <div class="text-muted mb-2 small">
+                        <div class="mb-1">主要來源:</div>
+                        ${topIpDisplay}
+                    </div>
                     <div class="mt-auto">
                         <small class="badge bg-info">點擊查看詳情</small>
                     </div>
                 </div>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // 載入異常資料
